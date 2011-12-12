@@ -15,11 +15,11 @@ Regexp::NumRange - Create Regular Expressions for numeric ranges
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 SYNOPSIS
 
@@ -45,7 +45,7 @@ Exports Available:
 
 =head2 rx_range
 
-Create a regex string between two abitrary integers.
+Create a regex string between two arbitrary integers.
 
   use Test::More;
   use Regexp::NumRange qw/ rx_range /;
@@ -114,12 +114,14 @@ sub rx_range {
     }
 
     # lowest digit
-    my $m  = $mind - 2;
-    my $l  = $ds[$#ds];
-    my $md = ( $ds[0] == $de[0] && !$diff ) ? $de[$#de] : 9;
-    $rx .= join( '', @ds[ 0 .. $m ] );
-    $rx .= "[$l-$md]";
-    $rx .= '|';
+    {
+        my $m  = $mind - 2;
+        my $l  = $ds[-1];
+        my $md = ( $ds[0] == $de[0] && !$diff ) ? $de[-1] : 9;
+        $rx .= join( '', @ds[ 0 .. $m ] );
+        $rx .= "[$l-$md]";
+        $rx .= '|';
+    }
 
     # full middle digit ranges
     my $om = -1;
@@ -153,13 +155,14 @@ sub rx_range {
         $m--;
     }
 
+    $rx =~ s/\|$//;
     $rx .= ')';
     return $rx;
 }
 
 =head2 rx_max
 
-Create a regex string between 0 and an abitrary integer.
+Create a regex string between 0 and an arbitrary integer.
 
   my $rx_string = rx_max(1024); # create a string matching numbers between 0 and 1024
   is $rx_string, '(102[0-4]|10[0-1][0-9]|0?[0-9]{1,3})';
@@ -213,10 +216,7 @@ automatically be notified of progress on your bug as I make changes.
 
 =head1 SUPPORT
 
-You can find documentation for this module with the perldoc command.
-
-    perldoc Regexp::NumRange
-
+Fork on github: L<https://github.com/jrideout/Regexp-NumRange>
 
 You can also look for information at:
 

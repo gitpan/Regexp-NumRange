@@ -9,9 +9,13 @@ unless ( $ENV{RELEASE_TESTING} ) {
     plan( skip_all => $msg );
 }
 
-# Ensure a recent version of Test::Pod
-my $min_tp = 1.22;
-eval "use Test::Pod $min_tp";
-plan skip_all => "Test::Pod $min_tp required for testing POD" if $@;
+eval "use Test::Spelling";
+exit if $@;
+add_stopwords(<DATA>);
+all_pod_files_spelling_ok();
 
-all_pod_files_ok();
+__END__
+Rideout
+CPAN
+AnnoCPAN
+github
